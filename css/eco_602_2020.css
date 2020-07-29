@@ -18,6 +18,10 @@
 
 .blue { background-color:#e6f0ff; border-radius: 5px; padding: 20px;}
 
+.blueborder { border-radius: 5px; padding: 20px; border: 0.1cm solid #e6f0ff; }
+.blueborder2 { background-color:#e6f0ff; border-radius: 5px; padding: 20px; border: 0.1cm solid #e6f0ff; }
+
+
 .showopt {
   background-color: #004c93;
   color: #FFFFFF; 

@@ -10,5 +10,6 @@
 .blueborder { border-radius: 0.2cm; padding: 0.3cm; border: 0.1cm solid #E6F0FF; }
 .redborder { border-radius: 0.2cm; padding: 0.3cm; border: 0.1cm solid #F5A796; }
 .grayborder { border-radius: 0.2cm; padding: 0.3cm; border: 0.1cm solid #ECE8E7; }
+.blackborder { border-radius: 0.2cm; padding: 0.3cm; border: 0.1cm solid #000000; }
 
 </style>

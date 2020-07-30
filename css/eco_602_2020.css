@@ -12,17 +12,16 @@
 }
 
 .warn { background-color:#F5A796; border-radius: 0.2cm; padding: 0.3cm;}
-.warn2 { background-color:#F5A796; border-radius: 5px; padding: 20px;}
+.info { background-color:#E6F0FF; border-radius: 0.2cm; padding: 0.3cm;}
 
-.info { background-color:#e6f0ff; border-radius: 5px; padding: 20px;}
+.red { background-color:#F5A796; border-radius: 0.2cm; padding: 0.3cm;}
+.blue { background-color:#E6F0FF; border-radius: 0.2cm; padding: 0.3cm;}
+.gray { background-color:#ECE8E7; border-radius: 0.2cm; padding: 0.3cm;}
 
-.red { background-color:#F5A796; border-radius: 5px; padding: 20px;}
-
-.blue { background-color:#e6f0ff; border-radius: 5px; padding: 20px;}
-
-.blueborder { border-radius: 0.2cm; padding: 0.3cm; border: 0.1cm solid #e6f0ff; }
-.blueborder3 { border-radius: 5px; padding: 20px; border: 0.1cm solid #e6f0ff; }
-.blueborder2 { background-color:#e6f0ff; border-radius: 5px; padding: 20px; border: 0.1cm solid #e6f0ff; }
+.blueborder { border-radius: 0.2cm; padding: 0.3cm; border: 0.1cm solid #E6F0FF; }
+.redborder { border-radius: 0.2cm; padding: 0.3cm; border: 0.1cm solid #F5A796; }
+.grayborder { border-radius: 0.2cm; padding: 0.3cm; border: 0.1cm solid #ECE8E7; }
+.blackborder { border-radius: 0.2cm; padding: 0.3cm; border: 0.1cm solid #000000; }
 
 
 .showopt {

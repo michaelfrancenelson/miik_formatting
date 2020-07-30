@@ -1,0 +1,14 @@
+<style type="text/css" rel="stylesheet">
+
+.warn { background-color:#F5A796; border-radius: 0.2cm; padding: 0.3cm;}
+.info { background-color:#E6F0FF; border-radius: 0.2cm; padding: 0.3cm;}
+
+.red { background-color:#F5A796; border-radius: 0.2cm; padding: 0.3cm;}
+.blue { background-color:#E6F0FF; border-radius: 0.2cm; padding: 0.3cm;}
+.gray { background-color:#ECE8E7; border-radius: 0.2cm; padding: 0.3cm;}
+
+.blueborder { border-radius: 0.2cm; padding: 0.3cm; border: 0.1cm solid #E6F0FF; }
+.redborder { border-radius: 0.2cm; padding: 0.3cm; border: 0.1cm solid #F5A796; }
+.grayborder { border-radius: 0.2cm; padding: 0.3cm; border: 0.1cm solid #ECE8E7; }
+
+</style>

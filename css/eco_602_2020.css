@@ -1,3 +1,4 @@
+<style type="text/css" rel="stylesheet">
 .btn {
     border-width: 0 0px 0px 0px;
     font-weight: normal;
@@ -10,7 +11,8 @@
     border-color: #ffffff;
 }
 
-.warn { background-color:#F5A796; border-radius: 5px; padding: 20px;}
+.warn { background-color:#F5A796; border-radius: 0.2cm; padding: 0.3cm;}
+.warn2 { background-color:#F5A796; border-radius: 5px; padding: 20px;}
 
 .info { background-color:#e6f0ff; border-radius: 5px; padding: 20px;}
 
@@ -18,7 +20,8 @@
 
 .blue { background-color:#e6f0ff; border-radius: 5px; padding: 20px;}
 
-.blueborder { border-radius: 5px; padding: 20px; border: 0.1cm solid #e6f0ff; }
+.blueborder { border-radius: 0.2cm; padding: 0.3cm; border: 0.1cm solid #e6f0ff; }
+.blueborder3 { border-radius: 5px; padding: 20px; border: 0.1cm solid #e6f0ff; }
 .blueborder2 { background-color:#e6f0ff; border-radius: 5px; padding: 20px; border: 0.1cm solid #e6f0ff; }
 
 
@@ -42,3 +45,4 @@
 pre.plot {
   background-color: white !important;
 }
+</style>

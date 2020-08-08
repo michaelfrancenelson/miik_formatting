@@ -1,4 +1,4 @@
-<style type="text/css" rel="stylesheet">
+﻿<style type="text/css" rel="stylesheet">
 
 .warn { background-color:#F5A796; border-radius: 0.2cm; padding: 0.3cm;}
 .info { background-color:#E6F0FF; border-radius: 0.2cm; padding: 0.3cm;}
@@ -11,5 +11,71 @@
 .redborder { border-radius: 0.2cm; padding: 0.3cm; border: 0.1cm solid #F5A796; }
 .grayborder { border-radius: 0.2cm; padding: 0.3cm; border: 0.1cm solid #ECE8E7; }
 .blackborder { border-radius: 0.2cm; padding: 0.3cm; border: 0.1cm solid #000000; }
+
+
+.thumb img {
+width: var(--thumb-width);
+border: var(thumb-border) solid var(--thumb-border-col);
+box-shadow: var(--thumb-box)
+margin: var(--thumb-margin);
+}
+
+
+/* Styles the lightbox, removes it from sight and adds the fade-in transition */
+
+.lb {
+position: fixed;
+top: -100%;
+width: var(--lb-width);
+height: auto;
+background: var(--lb-background)
+opacity: 0.3;
+overflow: scroll;
+}
+
+/* Styles the lightbox image, centers it vertically and horizontally, adds the zoom-in transition and makes it responsive using a combination of margin and absolute positioning */
+
+
+.lb img {
+position: absolute;
+top: 0;
+left:0;
+right:0;
+bottom: 0;
+width: var(--img-width);
+height: auto;
+object-fit: contain;
+}
+
+/* Uses the :target pseudo-class to perform the animations upon clicking the .lightbox-target anchor */
+.lb:target {
+opacity: 1;
+top: 0;
+bottom: 0;
+}
+
+.lb:target img {
+max-height: 100%;
+max-width: 100%;
+}
+
+.lb:target a.lightbox-close {
+top: 0;
+}
+
+a.lb-close {
+display: block;
+width:100%;
+height:100%;
+box-sizing: border-box;
+background: transparent;
+color: black;
+text-decoration: none;
+position: absolute;
+top: 0;
+right: 0;
+}
+
+
 
 </style>

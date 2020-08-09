@@ -7,27 +7,23 @@ body, html {
   text-align: center;
 }
 
-
-
 :root {
-  --thumb-width: 180px;
+  --thumb-width: 280px;
   --thumb-border: 0px solid red;
   --thumb-box-shadow: 0px 0px 1.5vw rgba(0,0,0,1);
-  --thumb-margin: 94px 20px 20px 20px;
-  --lb-width: 70vw;
-  --lb-background: rgba(0,0,0,0);
-  --img-width: 99%;
+  --thumb-margin: 10px 10px 10px 10px;
+  --lb-width: 100%;
+  --lb-background: rgba(0,0,.3,0.2);
+  --lb-border: 0px solid red;
+  --img-width: 85%;
   --img-border: 1px solid black;
   --img-box-shadow: 0.3vw 0.3vw 0.3vw rgba(0,0,0,0.7);
 }
 
-
-/* Styles the thumbnail */
-
 /* lightbox concept adapted from:
 https://codepen.io/ongtiffany/pen/BoOeQV
 */
-
+/* Styles the thumbnail */
 .thumb{
     display: inline-block;
     text-align: center;
@@ -36,6 +32,7 @@ https://codepen.io/ongtiffany/pen/BoOeQV
 
 .thumb img {
   width: var(--thumb-width);
+  left: calc(50% - var(--thumb-width) * 0.5);
   border: var(--thumb-border);
   box-shadow: var(--thumb-box-shadow);
   margin: var(--thumb-margin);
@@ -45,7 +42,10 @@ https://codepen.io/ongtiffany/pen/BoOeQV
 
 /* Styles the lightbox, removes it from sight and adds the fade-in transition */
 .lb {
-  position: fixed; top: -100%;
+  border: var(--lb-border);
+  position: fixed; 
+  bottom: 10%;
+  left: calc(50% - var(--lb-width) * 0.5);
   width: var(--lb-width); 
   height: auto;
   background: var(--lb-background); opacity: 0;
@@ -56,12 +56,44 @@ https://codepen.io/ongtiffany/pen/BoOeQV
 /* Styles the lightbox image, centers it vertically and horizontally, adds the zoom-in transition and makes it responsive using a combination of margin and absolute positioning */
 .lb img {
   position: absolute; object-fit: contain;
-  top: 0; left:0; right: 0; bottom: 0;
+  right: 0; 
+  bottom: 0;
+  top: 5%;
   width: var(--img-width); height: auto;
+  left: calc(50% - var(--img-width) * 0.5);
   box-shadow: var(--img-box-shadow);
   border: var(--img-border);
   text-align: center;
 }
+
+
+.lb___ img {
+  position: absolute; object-fit: contain;
+  right: 0; 
+  bottom: 0;
+  top: 5%;
+  width: var(--img-width); height: auto;
+  left: calc((100% - var(--img-width)) * 0.5);
+  left: calc((100% - var(--img-width)) * 0.5);
+  box-shadow: var(--img-box-shadow);
+  border: var(--img-border);
+  text-align: center;
+}
+
+/* Styles the lightbox, removes it from sight and adds the fade-in transition */
+.lb___ {
+  position: fixed; 
+  bottom: 10%;
+  left: calc(50% - var(--lb-width) * 0.5);
+  width: var(--lb-width); 
+  height: auto;
+  background: var(--lb-background); opacity: 0;
+  overflow: auto;
+  text-align: center;
+}
+
+
+
 
 /* Uses the :target pseudo-class to perform the animations upon clicking the .lightbox-target anchor */
 .lb:target { opacity: 1; top: 0; bottom: 0; }
@@ -192,5 +224,53 @@ max-width: 100%;
 .lightbox-target:target a.lightbox-close {
 top: 0px;
 }
+
+
+
+
+/* Styles the lightbox, removes it from sight and adds the fade-in transition */
+.lb_1 {
+  position: fixed; 
+  bottom: 10%;
+  left: calc(50% - var(--lb-width) * 0.5);
+  width: var(--lb-width); 
+  height: auto;
+  background: var(--lb-background); opacity: 0;
+  overflow: auto;
+  text-align: center;
+}
+
+
+/* Styles the lightbox, removes it from sight and adds the fade-in transition */
+.lb_ {
+  position: fixed; top: -100%;
+  width: var(--lb-width); 
+  height: auto;
+  background: var(--lb-background); opacity: 0;
+  overflow: auto;
+  text-align: center;
+}
+
+
+
+.lb_ img {
+  position: absolute; object-fit: contain;
+  top: 0; left:0; right: 0; bottom: 0;
+  width: var(--img-width); height: auto;
+  box-shadow: var(--img-box-shadow);
+  border: var(--img-border);
+  text-align: center;
+}
+
+.thumb_ img {
+  width: var(--thumb-width);
+  border: var(--thumb-border);
+  box-shadow: var(--thumb-box-shadow);
+  margin: var(--thumb-margin);
+  display: block;
+}
+
+
+
 
 </style>

@@ -2,7 +2,63 @@
 
 
 
-expandable_html_image = function(filename, click_message = "[Click to expand image]", thumb_width = NULL, lb_width = NULL, img_ref = NULL)
+expandable_html_image = function(filename, click_message = "[Click to expand image]")
+{
+
+if (FALSE)
+{
+  filename = "github_desktop_sign_in.PNG"
+  click_message = "[Click to expand image]"
+  thumb_width = NULL
+  thumb_width = "100px"
+  img_ref = NULL
+  lb_width = "80vw"
+  img_width = "70%"
+}
+
+href_image = paste0("img", sample(9999999, 1))
+href_close = paste0(sample(letters, 12), collapse = "")
+rmd_filename = sprintf(fmt = '![](%s)', filename)
+
+
+fmt = paste(
+  '<a href="#%4$s"></a>',
+  '<a class="thumb" href="#%3$s">',
+  '  <figure>',
+  '    %2$s',
+  '    <figcaption>%1$s</figcaption>',
+  '  </figure>',
+  '</a>',
+  '<div class="lb" id="%3$s">',
+  '  %2$s',
+  '  <a class="lb-close" href="#%4$s"></a>',
+  '</div>', 
+  sep = "\n")
+
+# format text numberings:
+# 1  click message
+# 2  image file name, formatted for markdown image inclusion
+# 3  href code for image
+# 4  href code for close
+
+
+
+(out =
+  sprintf(
+  fmt = fmt,
+  click_message, rmd_filename, href_image, href_close))
+
+cat(out)
+invisible(out)
+}
+
+
+
+
+if (FALSE)
+{
+
+expandable_html_image = function(filename, click_message = "[Click to expand image]", thumb_width = NULL, img_width = NULL, lb_width = NULL, img_ref = NULL)
 {
   
   if (FALSE)
@@ -13,6 +69,7 @@ expandable_html_image = function(filename, click_message = "[Click to expand ima
     thumb_width = "100px"
     img_ref = NULL
     lb_width = "80vw"
+    img_width = "70%"
   }
   
   href = ifelse(
@@ -21,7 +78,7 @@ expandable_html_image = function(filename, click_message = "[Click to expand ima
     img_ref)
   
   href_1 = 
-  paste0(sample(letters, 12), collapse = "")
+    paste0(sample(letters, 12), collapse = "")
   
   img_path = list.files(path = here::here(), pattern = filename, recursive = TRUE, full.names = TRUE)[1]
   
@@ -38,7 +95,7 @@ expandable_html_image = function(filename, click_message = "[Click to expand ima
       "",
       sprintf('style="width: %s;"', lb_width)
     )
-
+  
   
   thumb_style_md =
     ifelse(
@@ -46,19 +103,31 @@ expandable_html_image = function(filename, click_message = "[Click to expand ima
       "",
       sprintf('{width=%s}', thumb_width)
     )
-    
+  
+  img_style_md = 
+    ifelse(
+      is.null(img_width),
+      "",
+      sprintf('{width=%s}', img_width)
+    )
+  
+  
   img_thumb_md = sprintf(fmt = '![](%s)%s', img_path, thumb_style_md)
+  
   img_thumb_md = sprintf(fmt = '![](%s)%s', filename, thumb_style_md)
-  
-  
   img_lb_md = sprintf(fmt = '![](%s)', filename)
   
+  img_lb_md = sprintf(fmt = '![](%s)%s', filename, img_style_md)
+  
+  
+  '50% - var(--img-width) * 0.5'
   
   fmt = paste(
     
     '<a href="#%6$s"></a>',
     '<a class="thumb" href="#%2$s">',
     '  <figure>',
+    # '    <img %4$s src="@@PLUGINFILE@@/%9$s"/>',
     # '    <img %4$s src="%3$s"/>',
     '    %7$s',
     '    <figcaption>%1$s</figcaption>',
@@ -66,12 +135,14 @@ expandable_html_image = function(filename, click_message = "[Click to expand ima
     '</a>',
     '<div class="lb" %5$s id="%2$s">',
     # '  <img src="%3$s"/>',
+    # '  <img src="@@PLUGINFILE@@/%9$s"/>',
     '  %8$s',
     '  <a class="lb-close" href="#%6$s"></a>',
     # '  <a class="lb-close" href="#"></a>',
     '</div>', 
     sep = "\n")
   
+  '@@PLUGINFILE@@'
   
   # format text numberings:
   # 1  click message
@@ -82,33 +153,29 @@ expandable_html_image = function(filename, click_message = "[Click to expand ima
   # 6  test href target for close
   # 7  markdown thumbnail image path
   # 8  markdown lightbos image path
+  # 9  image file name (no path)
   
   
   
   (out =
-    sprintf(
-    fmt = fmt,
-    click_message, href, img_path, thumb_style, lb_style, href_1, img_thumb_md, img_lb_md))
+      sprintf(
+        fmt = fmt,
+        click_message, href, img_path, thumb_style, lb_style, href_1, img_thumb_md, img_lb_md, filename))
   
   cat(out)
   invisible(out)
 }
 
 
-
-
-if (FALSE)
+expandable_html_image = function(filename, click_message = "[Click to expand image]", img_ref = NULL)
 {
+  href = ifelse(
+    is.null(img_ref),
+    paste0("img", sample(9999999, 1)),
+    img_ref)
   
-  expandable_html_image = function(filename, click_message = "[Click to expand image]", img_ref = NULL)
-  {
-    href = ifelse(
-      is.null(img_ref),
-      paste0("img", sample(9999999, 1)),
-      img_ref)
-    
-    out = sprintf(fmt = 
-                    '%1$s <br>
+  out = sprintf(fmt = 
+                  '%1$s <br>
 <a class="thumb" href="#%2$s">
 ![](%3$s)
 </a> 
@@ -116,8 +183,8 @@ if (FALSE)
 ![](%3$s)
 <a class="lb-close" href="#"></a>
 </div>', click_message, href, filename)
-    cat(out)
-  }
+  cat(out)
+}
 }
 
 

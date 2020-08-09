@@ -1,19 +1,16 @@
-<style type="text/css" rel="stylesheet">
+<style>
 
-.warn { background-color:#F5A796; border-radius: 0.2cm; padding: 0.3cm;}
-.info { background-color:#E6F0FF; border-radius: 0.2cm; padding: 0.3cm;}
+/*Eliminates padding, centers the thumbnail */
+body, html {
+  padding: 0;
+  margin: 0;
+  text-align: center;
+}
 
-.red { background-color:#F5A796; border-radius: 0.2cm; padding: 0.3cm;}
-.blue { background-color:#E6F0FF; border-radius: 0.2cm; padding: 0.3cm;}
-.gray { background-color:#ECE8E7; border-radius: 0.2cm; padding: 0.3cm;}
 
-.blueborder { border-radius: 0.2cm; padding: 0.3cm; border: 0.1cm solid #E6F0FF; }
-.redborder { border-radius: 0.2cm; padding: 0.3cm; border: 0.1cm solid #F5A796; }
-.grayborder { border-radius: 0.2cm; padding: 0.3cm; border: 0.1cm solid #ECE8E7; }
-.blackborder { border-radius: 0.2cm; padding: 0.3cm; border: 0.1cm solid #000000; }
 
 :root {
-  --thumb-width: 120px;
+  --thumb-width: 70px;
   --thumb-border: 3px solid white;
   --thumb-box: 0px 0px 8px rgba(0,0,0,.3);
   --thumb-margin: 94px 20px 20px 20px;
@@ -23,12 +20,13 @@
 }
 
 
+/* Styles the thumbnail */
 
 /* lightbox concept adapted from:
 https://codepen.io/ongtiffany/pen/BoOeQV
 */
 
-.thumb img {
+a.thumb img {
   width: var(--thumb-width);
   border: var(--thumb-border);
   box-shadow: var(--thumb-box);
@@ -37,6 +35,7 @@ https://codepen.io/ongtiffany/pen/BoOeQV
 
 
 /* Styles the lightbox, removes it from sight and adds the fade-in transition */
+
 .lb {
   position: fixed; top: -100%;
   width: var(--lb-width); height: auto;
@@ -44,8 +43,9 @@ https://codepen.io/ongtiffany/pen/BoOeQV
   overflow: auto;
 }
 
-
 /* Styles the lightbox image, centers it vertically and horizontally, adds the zoom-in transition and makes it responsive using a combination of margin and absolute positioning */
+
+
 .lb img {
   position: absolute; object-fit: contain;
   top: 0; left:0; right: 0; bottom: 0;
@@ -63,23 +63,18 @@ a.lb-close {
   box-sizing: border-box; background: transparent;
   color: black;  text-decoration: none;
 }
+ 
 
-/*Eliminates padding, centers the thumbnail */
 
-body, html {
-padding: 0;
-margin: 0;
-text-align: center;
+
+
+a.lb-close {
+  position: absolute; display: block;
+  width:100%; height:100%;  top: 0; right: 0;
+  box-sizing: border-box; background: transparent;
+  color: black;  text-decoration: none;
 }
 
-/* Styles the thumbnail */
-
-a.lightbox img {
-height: var(--thumb-width);
-border: 3px solid white;
-box-shadow: 0px 0px 8px rgba(0,0,0,.3);
-margin: 94px 20px 20px 20px;
-}
 
 /* Styles the lightbox, removes it from sight and adds the fade-in transition */
 
@@ -117,20 +112,57 @@ box-sizing: border-box;
 transition: .5s ease-in-out;
 }
 
-
 /* Styles the close link, adds the slide down transition */
 
 a.lightbox-close {
 display: block;
-width:100%;
-height:100%;
+width:50px;
+height:50px;
 box-sizing: border-box;
-background: transparent;
+background: white;
 color: black;
 text-decoration: none;
 position: absolute;
-top: 0;
+top: -80px;
 right: 0;
+-webkit-transition: .5s ease-in-out;
+-moz-transition: .5s ease-in-out;
+-o-transition: .5s ease-in-out;
+transition: .5s ease-in-out;
+}
+
+/* Provides part of the "X" to eliminate an image from the close link */
+
+a.lightbox-close:before {
+content: "";
+display: block;
+height: 30px;
+width: 1px;
+background: black;
+position: absolute;
+left: 26px;
+top:10px;
+-webkit-transform:rotate(45deg);
+-moz-transform:rotate(45deg);
+-o-transform:rotate(45deg);
+transform:rotate(45deg);
+}
+
+/* Provides part of the "X" to eliminate an image from the close link */
+
+a.lightbox-close:after {
+content: "";
+display: block;
+height: 30px;
+width: 1px;
+background: black;
+position: absolute;
+left: 26px;
+top:10px;
+-webkit-transform:rotate(-45deg);
+-moz-transform:rotate(-45deg);
+-o-transform:rotate(-45deg);
+transform:rotate(-45deg);
 }
 
 /* Uses the :target pseudo-class to perform the animations upon clicking the .lightbox-target anchor */
@@ -149,9 +181,5 @@ max-width: 100%;
 .lightbox-target:target a.lightbox-close {
 top: 0px;
 }
-
-
-
-
 
 </style>

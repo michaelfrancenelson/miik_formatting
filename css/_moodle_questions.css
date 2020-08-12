@@ -66,6 +66,12 @@ a.lb-close {
 
 /*Eliminates padding, centers the thumbnail */
 
+body, html {
+padding: 0;
+margin: 0;
+text-align: center;
+}
+
 /* Styles the thumbnail */
 
 a.lightbox img {

@@ -17,3 +17,14 @@ bold_col <- function(x, color) {
     sprintf("<span style='color: %s;'>%s</span>", color, x)
   } else x
 }
+
+html_output_only = function(x)
+{
+    if (knitr::is_html_output()) {
+      # cat(
+        sprintf("<span>%s</span>", x)
+        # )
+    } 
+}
+
+

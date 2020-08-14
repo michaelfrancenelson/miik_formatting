@@ -33,7 +33,7 @@ html_output_only = function(x)
 
 expandable_html_image = function(
   filename, click_message = "[Click to expand image]", 
-  thumb_width = 240, img_width = 60, cat_result = TRUE)
+  thumb_width = 240, img_width = 60, cat_result = TRUE, moodle_quiz = FALSE)
 {
   if (FALSE)
   {
@@ -52,11 +52,14 @@ expandable_html_image = function(
     expandable_html_image("mfn_github_profile_arrow.png", img_width = 29)
   }
   
-  matching_files = list.files(path = here::here(), pattern = filename, recursive = TRUE, full.names = TRUE)
-  stopifnot(length(matching_files) > 0)
+  if (!moodle_quiz)
+  {
+    matching_files = list.files(path = here::here(), pattern = filename, recursive = TRUE, full.names = TRUE)
+    stopifnot(length(matching_files) > 0)
+    filename = matching_files[1]
+  }
   
   
-  filename = matching_files[1]
   
   
   href_image = paste0("img", sample(9999999, 1))
@@ -133,7 +136,8 @@ build_lightbox = function(img_width)
   lb_img = sprintf(
     fmt = paste(
       '\n.lb%2$s img {',
-      'margin: auto; position: absolute; object-fit: contain;',
+      'margin: auto;',
+      'position: absolute; object-fit: contain;',
       'right: 0; left: 0; bottom: 0; top: 0;',
       'width: %2$s%1$s;',
       '}\n', sep = "\n"),
@@ -156,4 +160,14 @@ build_lightbox = function(img_width)
   
   out = paste("\n", lb, lb_img, lb_close, lb_target)
   return(out)
+}
+
+
+build_popup = function(filename, thumb_width = 250, cat_output = TRUE)
+{
+  fmt_popup = 
+    '<a target="_blank" href="%1$s"><img src="install_rstudio_question.PNG" style="width:%2$spx"></a>'
+  out_popup = sprintf(fmt_popup, filename, thumb_width)
+  if(cat_output) cat(out_popup)
+  invisible(out_popup)
 }

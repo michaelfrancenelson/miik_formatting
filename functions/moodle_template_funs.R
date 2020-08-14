@@ -2,9 +2,17 @@
 
 expandable_html_image = function(filename, click_message = "[Click to expand image]", img_width = NULL)
 {
+  if(length(list.files(path = here::here(), pattern = filename)) == 0)
+  {
+    tmp_name = list.files(path = here::here(), pattern = filename, recursive = TRUE, full.names = TRUE)
+    stopifnot(length(tmp_name) > 0)
+    filename = tmp_name[1]
+    rm(tmp_name)
+  }
   
   if (FALSE)
   {
+    
     filename = "github_desktop_sign_in.PNG"
     click_message = "[Click to expand image]"
     img_width = 70

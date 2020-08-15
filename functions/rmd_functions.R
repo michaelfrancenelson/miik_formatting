@@ -163,11 +163,66 @@ build_lightbox = function(img_width)
 }
 
 
-build_popup = function(filename, thumb_width = 250, cat_output = TRUE)
+# filename = "install_rstudio_question.PNG"
+# build_popup(filename, recursive = TRUE)
+# ccc = list.files(path = here::here(), pattern = filename, recursive = TRUE, full.names = TRUE)
+# length(ccc)
+
+build_popup = function(filename, thumb_width = 250, cat_output = TRUE, recursive = FALSE)
 {
+  
+  # Check whether units were given for the thumbnail width.  If not, default to pixels.
+  suppressWarnings(
+    {
+      thumb_width = ifelse(
+        is.na(as.numeric(thumb_width)),
+        thumb_width,
+        paste0(thumb_width, "px"))
+      
+    }
+  )
+  
+  # option to search project path for the file.  This doesn't work well with moodle quiz questions.
+  if (recursive)
+  {
+    candidate_files = list.files(path = here::here(), pattern = filename, recursive = TRUE, full.names = TRUE)
+    stopifnot(length(candidate_files) > 0)
+    filename = candidate_files[1]
+  }
+  
   fmt_popup = 
-    '<a target="_blank" href="%1$s"><img src="install_rstudio_question.PNG" style="width:%2$spx"></a>'
+    '<a target="_blank" href="%1$s"><img src="%1$s" style="width:%2$s"></a>'
   out_popup = sprintf(fmt_popup, filename, thumb_width)
+  if(cat_output) cat(out_popup)
+  invisible(out_popup)
+}
+
+build_popup_figure = function(filename, thumb_width = 250, caption = "[click to embiggen]", cat_output = TRUE, recursive = FALSE)
+{
+  
+  
+  # Check whether units were given for the thumbnail width.  If not, default to pixels.
+  suppressWarnings(
+    {
+      thumb_width = ifelse(
+        is.na(as.numeric(thumb_width)),
+        thumb_width,
+        paste0(thumb_width, "px"))
+    }
+  )
+  
+  # option to search project path for the file.  This doesn't work well with moodle quiz questions.
+  if (recursive)
+  {
+    candidate_files = list.files(path = here::here(), pattern = filename, recursive = TRUE, full.names = TRUE)
+    stopifnot(length(candidate_files) > 0)
+    filename = candidate_files[1]
+  }
+  
+  
+  fmt_popup = 
+    '<a target="_blank" href="%1$s"><figure ><img src="%1$s" style="width:%2$s"><figcaption>%3$s</figcaption></figure></a>'
+  out_popup = sprintf(fmt_popup, filename, thumb_width, caption)
   if(cat_output) cat(out_popup)
   invisible(out_popup)
 }

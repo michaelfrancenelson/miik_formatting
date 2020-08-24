@@ -97,7 +97,7 @@ expandable_html_image = function(
   # 5  lightbox image width
   # 6  thumb width
   
-  lb_out = build_lightbox(img_width)
+  lb_out = build_lightbox(img_width, moodle_question = moodle_quiz)
   thumb_out = build_thumb(thumb_width)
   out = paste("\n<style>\n", thumb_out, lb_out, "\n</style>\n", html_out)
   
@@ -121,8 +121,15 @@ build_thumb = function(thumb_width, cat_result = TRUE)
   return(thumb)
 }
 
-build_lightbox = function(img_width)
+build_lightbox = function(img_width, moodle_question = FALSE)
 {
+  
+  lb_pos = ifelse(
+    moodle_question,
+    'left: 0;',
+    'right: 0; left: 0; bottom: 0; top: 0;'
+  )
+  
   lb = sprintf(
     fmt = paste(
       '\n.lb%2$s {',
@@ -133,15 +140,33 @@ build_lightbox = function(img_width)
       '}\n', sep = "\n"),
     "%", img_width)
   
+  lb_fmt = paste(
+    '\n.lb%2$s img {',
+    'margin: auto;',
+    'position: absolute; object-fit: contain;',
+    '%3$s',
+    # 'right: 0; left: 0; bottom: 0; top: 0;',
+    # 'left: 0;',
+    'width: %2$s%1$s;',
+    '}\n', sep = "\n")
+  
+  # lb_img = sprintf(
+  #   fmt = paste(
+  #     '\n.lb%2$s img {',
+  #     'margin: auto;',
+  #     'position: absolute; object-fit: contain;',
+  #     # 'right: 0; left: 0; bottom: 0; top: 0;',
+  #     'left: 0;',
+  #     'width: %2$s%1$s;',
+  #     '}\n', sep = "\n"),
+  #   "%", img_width)
+
   lb_img = sprintf(
-    fmt = paste(
-      '\n.lb%2$s img {',
-      'margin: auto;',
-      'position: absolute; object-fit: contain;',
-      'right: 0; left: 0; bottom: 0; top: 0;',
-      'width: %2$s%1$s;',
-      '}\n', sep = "\n"),
-    "%", img_width)
+    fmt = lb_fmt, 
+    "%", 
+    img_width,
+    lb_pos)
+
   
   lb_close = sprintf(
     fmt = paste(

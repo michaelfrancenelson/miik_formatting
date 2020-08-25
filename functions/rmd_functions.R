@@ -163,13 +163,13 @@ build_lightbox = function(img_width, moodle_question = FALSE, bg_alpha = 0.4)
   #     'width: %2$s%1$s;',
   #     '}\n', sep = "\n"),
   #   "%", img_width)
-
+  
   lb_img = sprintf(
     fmt = lb_fmt, 
     "%", 
     img_width,
     lb_pos)
-
+  
   
   lb_close = sprintf(
     fmt = paste(
@@ -257,41 +257,92 @@ build_popup_figure = function(filename, thumb_width = 250, caption = "[click to 
 }
 
 
-build_moodle_questions = function(assignment_name, question_numbers = NA)
+build_moodle_questions = function(
+  assignment_name, 
+  assignment_base_dir = "assignments", 
+  question_numbers = NA, 
+  separate_question_files = FALSE)
 {
-  potential_dirs = list.files(path = here::here(), pattern = assignment_name, recursive = TRUE, include.dirs = TRUE, full.names = TRUE)
   
+  
+  if(FALSE)
+  {
+    question_numbers = 1
+    separate_question_files = FALSE
+    separate_question_files = TRUE
+    assignment_name = "week_01_software_setup"
+    assignment_base_dir = "assignments"
+  }
+  
+  potential_dirs = list.files(
+    path = here::here(assignment_base_dir),
+    pattern = assignment_name, 
+    recursive = TRUE, 
+    include.dirs = TRUE, 
+    full.names = TRUE)
+  
+  # potential_dirs = list.dirs(
+  # path = here::here(assignment_base_dir), pattern = assignment_name, recursive = TRUE, full.names = TRUE)
+  
+  # Exclude filename matches
+  # potential_dirs = potential_dirs[dir.exists(potential_dirs)]
   assign_dir = potential_dirs[dir.exists(potential_dirs)]
   
   if (length(assign_dir) == 0)
     cat(sprintf("No assignment folder called '%1$s' found...", assignment_name))
   
   if (length(assign_dir) > 1)
-    cat(sprintf("Duplicate assignment folders called '%1$s' found...", assignment_name))
+    cat(sprintf("Duplicate assignment folders called '%1$s' found...\n Try using a different assignment base directory to limit duplicates", assignment_name))
   
   stopifnot(length(assign_dir) == 1)
   
-  cat(sprintf("Assignment folders '%1$s' found at location:\n     '%2$s'", assignment_name, assign_dir))
+  cat(sprintf("Assignment folder '%1$s' found at location:\n     '%2$s'", assignment_name, assign_dir))
   
   exercise_dir = file.path(assign_dir, "moodle")
   question_files = list.files(path = exercise_dir, pattern = ".Rmd", full.names = TRUE)
   
-  question_files = ifelse(
-    is.na(question_numbers),
-    question_files,
-    question_files[question_numbers]
-  )
+  q_files = question_files
+  if (!is.na(question_numbers))
+      q_files = question_files[question_numbers]
   
-  exams::exams2moodle(
-    verbose = TRUE,
-    file = question_files,
-    dir = assign_dir,
-    edir = exercise_dir,
-    iname = FALSE,
-    testid = TRUE,
-    mchoice = list(shuffle = TRUE),
-    schoice = list(shuffle = TRUE),
-    name = assignment_name)
+  # q_files = 
+    # ifelse(
+      # TRUE,
+      # is.na(question_numbers),
+      # c(question_files),
+      # question_files[question_numbers]
+    # )
+  
+  question_basenames = tools::file_path_sans_ext(basename(q_files))
+  
+  build_ex = function(f, name = NULL)
+  {
+    exams::exams2moodle(
+      file = f,
+      name = name,
+      dir = assign_dir,
+      edir = exercise_dir,
+      iname = FALSE,
+      testid = TRUE,
+      verbose = TRUE,
+      mchoice = list(shuffle = TRUE),
+      schoice = list(shuffle = TRUE))
+    # schoice = list(shuffle = TRUE),
+    # name = assignment_name)
+  }
+  
+  
+  if (separate_question_files)
+  {
+    for (i in 1:length(question_files))
+    {
+      build_ex(question_files[i], name = question_basenames[i])
+    }
+  } else {
+    build_ex(question_files, name = assignment_name)
+  }
+  
+  
 }
 
 build_assignment = function(file_stem, file_prefix = NULL, assignment_dir = here::here("docs", "assignments"))

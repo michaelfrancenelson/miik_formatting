@@ -33,7 +33,7 @@ html_output_only = function(x)
 
 expandable_html_image = function(
   filename, click_message = "[Click to expand image]", 
-  thumb_width = 240, img_width = 60, cat_result = TRUE, moodle_quiz = FALSE)
+  thumb_width = 240, img_width = 60, cat_result = TRUE, moodle_quiz = FALSE, bg_alpha = 0.4)
 {
   if (FALSE)
   {
@@ -97,7 +97,7 @@ expandable_html_image = function(
   # 5  lightbox image width
   # 6  thumb width
   
-  lb_out = build_lightbox(img_width, moodle_question = moodle_quiz)
+  lb_out = build_lightbox(img_width, moodle_question = moodle_quiz, bg_alpha = bg_alpha)
   thumb_out = build_thumb(thumb_width)
   out = paste("\n<style>\n", thumb_out, lb_out, "\n</style>\n", html_out)
   
@@ -113,7 +113,7 @@ build_thumb = function(thumb_width, cat_result = TRUE)
     paste(
       '\n.thumb%1$s img {',
       'width: %1$spx;',
-      'border: 1px solid green;',
+      'border: 4px solid green;',
       'box-shadow: 0px 0px 1.5vw rgba(0,0,0,1);',
       '}\n', sep = "\n"),
     thumb_width)
@@ -121,7 +121,7 @@ build_thumb = function(thumb_width, cat_result = TRUE)
   return(thumb)
 }
 
-build_lightbox = function(img_width, moodle_question = FALSE)
+build_lightbox = function(img_width, moodle_question = FALSE, bg_alpha = 0.4)
 {
   
   lb_pos = ifelse(
@@ -136,15 +136,18 @@ build_lightbox = function(img_width, moodle_question = FALSE)
       'position: fixed;',
       'top: -100%1$s;',
       'width: 100%1$s;',
-      'background: rgba(0,0,0,0.4);',
+      'background: rgba(0,0,0,%3$s);',
+      # 'border: 1px solid green;',
+      # 'background: rgba(0,0,0,0.4);',
       '}\n', sep = "\n"),
-    "%", img_width)
+    "%", img_width, bg_alpha)
   
   lb_fmt = paste(
     '\n.lb%2$s img {',
     'margin: auto;',
     'position: absolute; object-fit: contain;',
     '%3$s',
+    'border: 5px solid blue;',
     # 'right: 0; left: 0; bottom: 0; top: 0;',
     # 'left: 0;',
     'width: %2$s%1$s;',
@@ -180,6 +183,7 @@ build_lightbox = function(img_width, moodle_question = FALSE)
     fmt = paste(
       '\n.lb%2$s:target {',
       'opacity: 1; top: 0; bottom: 0;',
+      'border: 3px solid green;',
       '}\n', sep = "\n"),
     "%", img_width)
   
@@ -250,4 +254,110 @@ build_popup_figure = function(filename, thumb_width = 250, caption = "[click to 
   out_popup = sprintf(fmt_popup, filename, thumb_width, caption)
   if(cat_output) cat(out_popup)
   invisible(out_popup)
+}
+
+
+build_moodle_questions = function(assignment_name, question_numbers = NA)
+{
+  potential_dirs = list.files(path = here::here(), pattern = assignment_name, recursive = TRUE, include.dirs = TRUE, full.names = TRUE)
+  
+  assign_dir = potential_dirs[dir.exists(potential_dirs)]
+  
+  if (length(assign_dir) == 0)
+    cat(sprintf("No assignment folder called '%1$s' found...", assignment_name))
+  
+  if (length(assign_dir) > 1)
+    cat(sprintf("Duplicate assignment folders called '%1$s' found...", assignment_name))
+  
+  stopifnot(length(assign_dir) == 1)
+  
+  cat(sprintf("Assignment folders '%1$s' found at location:\n     '%2$s'", assignment_name, assign_dir))
+  
+  exercise_dir = file.path(assign_dir, "moodle")
+  question_files = list.files(path = exercise_dir, pattern = ".Rmd", full.names = TRUE)
+  
+  question_files = ifelse(
+    is.na(question_numbers),
+    question_files,
+    question_files[question_numbers]
+  )
+  
+  exams::exams2moodle(
+    verbose = TRUE,
+    file = question_files,
+    dir = assign_dir,
+    edir = exercise_dir,
+    iname = FALSE,
+    testid = TRUE,
+    mchoice = list(shuffle = TRUE),
+    schoice = list(shuffle = TRUE),
+    name = assignment_name)
+}
+
+build_assignment = function(file_stem, file_prefix = NULL, assignment_dir = here::here("docs", "assignments"))
+{
+  file_in = paste0(file_stem, ".Rmd")
+  assignment_rmd = list.files(path = here::here(), pattern = file_in, recursive = TRUE, full.names = TRUE)
+  
+  # Make sure the file is found and that there is no duplicate assignment source
+  if (length(assignment_rmd) == 0)
+    cat(sprintf("Assignment source file '%s' not found.", file_in))
+  
+  if (length(assignment_rmd) > 1)
+  {
+    cat(sprintf("Multiple assignment source files with name '%s' found.", file_in))
+  }
+  
+  stopifnot(length(assignment_rmd) == 1)
+  
+  cat(sprintf("Assignment source file found:%s", assignment_rmd))
+  
+  file_out = ifelse(
+    is.null(file_prefix),
+    sprintf("%2$s.html", file_prefix, file_stem),
+    sprintf("%1$s_%2$s.html", file_prefix, file_stem)
+  )
+  
+  rmarkdown::render(
+    input = assignment_rmd, 
+    output_file = file_out,
+    output_dir = assignment_dir)
+}
+
+
+build_doc = function(file_stem, dir_out, filename_out = NULL, type = "html")
+{
+  render_file = list.files(path = here::here(), pattern = paste0(file_stem, ".Rmd"), recursive = TRUE, full.names = TRUE)
+  
+  if (length(render_file) == 0)
+    cat(sprintf("No source file with name '%1$s.%2$s' found.", file_stem, "Rmd"))
+  if (length(render_file) > 1)
+    cat(sprintf("Duplicate source files with name '%1$s.%2$s' were found.", file_stem, "Rmd"))
+  
+  stopifnot(length(render_file) == 1)
+  
+  output_file = 
+    sprintf(
+      "%1$s.%2$s", 
+      paste0(file.path(
+        dir_out, 
+        ifelse(
+          is.null(filename_out),
+          file_stem,
+          filename_out
+        )
+      )),
+      type)
+  
+  if (type == "html")
+    rmarkdown::render(
+      input = render_file, 
+      output_file = output_file,
+      output_format = "html_document")
+  if (type == "pdf")
+    rmarkdown::render(
+      input = render_file, 
+      output_file = output_file,
+      output_format = "pdf_document", 
+      output_options = list("toc: TRUE", "number_sections: TRUE"))
 }

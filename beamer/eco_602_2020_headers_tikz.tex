@@ -22,6 +22,14 @@
 \setbeamercolor{navigation symbols}{fg=white!70!LG, bg=white!70!LG}
 \usepackage{inputenc}
 \usepackage{booktabs}
+\let\tempone\itemize
+\let\temptwo\enditemize
+\renewenvironment{itemize}{\tempone\addtolength{\itemsep}{0.5\baselineskip}}{\temptwo}
+
+\let\olditem\item
+\renewcommand{\item}{%
+\olditem\vspace{6pt}}
+
 \newcommand{\logoSoutheast}[1]{
   \vfill
   \begin{tikzpicture}[remember picture,overlay]

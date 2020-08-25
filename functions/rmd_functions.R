@@ -260,11 +260,10 @@ build_popup_figure = function(filename, thumb_width = 250, caption = "[click to 
 build_moodle_questions = function(
   assignment_name, 
   assignment_base_dir = "assignments", 
+  moodle_source_subdir = "moodle",
   question_numbers = NA, 
   separate_question_files = FALSE)
 {
-  
-  
   if(FALSE)
   {
     question_numbers = 1
@@ -272,6 +271,7 @@ build_moodle_questions = function(
     separate_question_files = TRUE
     assignment_name = "week_01_software_setup"
     assignment_base_dir = "assignments"
+    moodle_source_subdir = "moodle"
   }
   
   potential_dirs = list.files(
@@ -298,7 +298,7 @@ build_moodle_questions = function(
   
   cat(sprintf("Assignment folder '%1$s' found at location:\n     '%2$s'", assignment_name, assign_dir))
   
-  exercise_dir = file.path(assign_dir, "moodle")
+  exercise_dir = file.path(assign_dir, moodle_source_subdir)
   question_files = list.files(path = exercise_dir, pattern = ".Rmd", full.names = TRUE)
   
   q_files = question_files
@@ -334,7 +334,7 @@ build_moodle_questions = function(
   
   if (separate_question_files)
   {
-    for (i in 1:length(question_files))
+    for (i in 1:length(q_files))
     {
       build_ex(question_files[i], name = question_basenames[i])
     }

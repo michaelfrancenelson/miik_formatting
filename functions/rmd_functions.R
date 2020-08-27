@@ -303,15 +303,15 @@ build_moodle_questions = function(
   
   q_files = question_files
   if (!is.na(question_numbers))
-      q_files = question_files[question_numbers]
+    q_files = question_files[question_numbers]
   
   # q_files = 
-    # ifelse(
-      # TRUE,
-      # is.na(question_numbers),
-      # c(question_files),
-      # question_files[question_numbers]
-    # )
+  # ifelse(
+  # TRUE,
+  # is.na(question_numbers),
+  # c(question_files),
+  # question_files[question_numbers]
+  # )
   
   question_basenames = tools::file_path_sans_ext(basename(q_files))
   
@@ -376,9 +376,11 @@ build_assignment = function(file_stem, file_prefix = NULL, assignment_dir = here
 }
 
 
-build_doc = function(file_stem, dir_out, filename_out = NULL, type = "html")
+build_doc = function(file_stem, dir_out, base_path = here::here(),
+                     filename_out = NULL, 
+                     type = "html")
 {
-  render_file = list.files(path = here::here(), pattern = paste0(file_stem, ".Rmd"), recursive = TRUE, full.names = TRUE)
+  render_file = list.files(path = base_path, pattern = paste0(file_stem, ".Rmd"), recursive = TRUE, full.names = TRUE)
   
   if (length(render_file) == 0)
     cat(sprintf("No source file with name '%1$s.%2$s' found.", file_stem, "Rmd"))
@@ -401,14 +403,24 @@ build_doc = function(file_stem, dir_out, filename_out = NULL, type = "html")
       type)
   
   if (type == "html")
+  {
     rmarkdown::render(
       input = render_file, 
       output_file = output_file,
-      output_format = "html_document")
+      output_format = "html_document") 
+    return(TRUE)
+  }
   if (type == "pdf")
+  {
     rmarkdown::render(
       input = render_file, 
       output_file = output_file,
       output_format = "pdf_document", 
       output_options = list("toc: TRUE", "number_sections: TRUE"))
+    return(TRUE)
+  }
+  rmarkdown::render(
+    input = render_file, 
+    output_file = output_file)
+  
 }

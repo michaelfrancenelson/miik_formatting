@@ -1,12 +1,20 @@
 require(here)
 
-
-find_img = function(filename)
+find_file = function(filename)
 {
   matching_files = list.files(path = here::here(), pattern = filename, recursive = TRUE, full.names = TRUE)
+  
+  if (length(matching_files) == 0)
+    cat(sprintf("File '%s' not found", filename))
   stopifnot(length(matching_files) > 0)
+
   return(matching_files[1])
 }
+
+# for compatability with older scripts
+find_img = function(filename) { find_file(filaname) }
+
+
 
 colorize <- function(x, color) {
   if (knitr::is_latex_output()) {

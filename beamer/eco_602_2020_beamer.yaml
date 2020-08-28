@@ -9,5 +9,6 @@ fonttheme: "serif"
 slide_level: 2
 incremental: false
 classoption: t
+eval.expr: true
 # https://hartwork.org/beamer-theme-matrix/
 ---

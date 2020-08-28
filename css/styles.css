@@ -11,17 +11,21 @@
     border-color: #ffffff;
 }
 
-.warn { background-color:#F5A796; border-radius: 0.2cm; padding: 0.3cm;}
-.info { background-color:#E6F0FF; border-radius: 0.2cm; padding: 0.3cm;}
+.warn { background-color:#F5A796; color: rgba(0,0,0,1); border-radius: 0.2cm; padding: 0.3cm;}
+.info { background-color:#E6F0FF; color: rgba(0,0,0,1); border-radius: 0.2cm; padding: 0.3cm;}
 
-.red { background-color:#F5A796; border-radius: 0.2cm; padding: 0.3cm;}
-.blue { background-color:#E6F0FF; border-radius: 0.2cm; padding: 0.3cm;}
-.gray { background-color:#ECE8E7; border-radius: 0.2cm; padding: 0.3cm;}
+.red  { background-color: rgba(255, 0, 0, 0.1); color: rgba(0,0,0,1); }
+.blue { background-color:#E6F0FF; color: rgba(0,0,0,1); }
+.gray { background-color:#ECE8E7; color: rgba(0,0,0,1); }
 
-.blueborder { border-radius: 0.2cm; padding: 0.3cm; border: 0.1cm solid #E6F0FF; }
-.redborder { border-radius: 0.2cm; padding: 0.3cm; border: 0.1cm solid #F5A796; }
-.grayborder { border-radius: 0.2cm; padding: 0.3cm; border: 0.1cm solid #ECE8E7; }
-.blackborder { border-radius: 0.2cm; padding: 0.3cm; border: 0.1cm solid #000000; }
+.ared  { background-color: rgba(255, 0, 0, 0.1); color: rgba(0,0,0,1); border-radius: 0.2cm; padding: 0.3cm;}
+.ablue { background-color:#E6F0FF; color: rgba(0,0,0,1); border-radius: 0.2cm; padding: 0.3cm;}
+.agray { background-color:#ECE8E7; color: rgba(0,0,0,1); border-radius: 0.2cm; padding: 0.3cm;}
+
+.blueborder  { border-radius: 0.2cm; padding: 0.3cm; border: 0.1cm solid #E6F0FF; color: rgba(0,0,0,1); }
+.redborder   { border-radius: 0.2cm; padding: 0.3cm; border: 0.1cm solid #FF0000; color: rgba(0,0,0,1); }
+.grayborder  { border-radius: 0.2cm; padding: 0.3cm; border: 0.1cm solid #ECE8E7; color: rgba(0,0,0,1); }
+.blackborder { border-radius: 0.2cm; padding: 0.3cm; border: 0.1cm solid #000000; color: rgba(0,0,0,1); }
 
 
 .showopt {

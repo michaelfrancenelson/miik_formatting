@@ -36,6 +36,9 @@ build_moodle_questions_for_web = function()
   get_rmd_header = function(filename)
   {
     tmp = readLines(filename)
+    header_symbols = which(grepl("---", tmp))
+    out_header = tmp[header_symbols[1]:header_symbols[2]]  
+    
   }
   
   

@@ -7,13 +7,38 @@ build_moodle_questions_for_web = function()
 
   if(FALSE)
   {
-    assignment_name = "lab_02_r_fundamentals_2"
     assignment_name = "week_02_r_foundations_2"
+    assignment_name = "lab_02_r_fundamentals_2"
     assignment_base_dir = "assignments"
     moodle_source_subdir = "moodle"
   }
   
+  
+  
+  get_moodle_question_body = function(filename)
+  {
+    if (FALSE)
+    {
+      filename = question_files[1]
+    }
     
+    file_lines = readLines(filename)
+    
+    # Read the lines between the markdown header and the end of the questions section
+    
+    
+    
+    
+  }
+  
+    
+  
+  get_rmd_header = function(filename)
+  {
+    tmp = readLines(filename)
+  }
+  
+  
   
   if (FALSE)
   {
@@ -31,17 +56,10 @@ tmp[1]
   
   out_header = tmp[header_symbols[1]:header_symbols[2]]  
   
-  header_found = FALSE
-  for(i in 1:length(tmp))
-  {
-    # Search 
-          if ((tmp[i] == "___") & header_found == FALSE)
-    {
-      header_found = TRUE
-    }
-    
-  }
+
   
+  
+    
     
   }
 }

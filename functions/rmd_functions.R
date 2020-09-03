@@ -1,6 +1,6 @@
 require(here)
 
-source(here::here("formatting", "functions", "rmd_functions.R"))
+source(here::here("formatting", "functions", "rmd_moodle_functions.R"))
 
 find_file = function(filename)
 {

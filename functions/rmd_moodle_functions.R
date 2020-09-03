@@ -148,8 +148,8 @@ build_moodle_questions = function(
     exams::exams2moodle(
       file = f,
       name = name,
-      dir = assign_dir,
-      edir = exercise_dir,
+      dir = paths$assignment_dir,
+      edir = paths$exercise_dir,
       iname = FALSE,
       testid = TRUE,
       verbose = TRUE,

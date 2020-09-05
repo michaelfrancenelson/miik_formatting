@@ -41,7 +41,9 @@ html_output_only = function(x)
 
 expandable_html_image = function(
   filename, click_message = "[Click to expand image]", 
-  thumb_width = 240, img_width = 60, cat_result = TRUE, moodle_quiz = FALSE, bg_alpha = 0.4)
+  thumb_width = 240, img_width = 60,
+  cat_result = TRUE, 
+  moodle_quiz = FALSE, bg_alpha = 0.4)
 {
   if (FALSE)
   {
@@ -66,9 +68,6 @@ expandable_html_image = function(
     stopifnot(length(matching_files) > 0)
     filename = matching_files[1]
   }
-  
-  
-  
   
   href_image = paste0("img", sample(9999999, 1))
   href_close = paste0(sample(letters, 12), collapse = "")

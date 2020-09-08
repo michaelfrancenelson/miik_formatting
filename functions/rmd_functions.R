@@ -300,11 +300,24 @@ build_doc = function(
       )),
       type)
   
+  output_file_stem = 
+    sprintf(
+      "%1$s", 
+      paste0(file.path(
+        dir_out, 
+        ifelse(
+          is.null(filename_out),
+          file_stem,
+          filename_out
+        )
+      )))
+  
   if (type == "html")
   {
     rmarkdown::render(
       input = render_file, 
-      output_file = output_file,
+      output_file = paste0(output_file_stem, ".html"),
+      # output_file,
       output_format = "html_document") 
     return(TRUE)
   }
@@ -312,14 +325,20 @@ build_doc = function(
   {
     rmarkdown::render(
       input = render_file, 
-      output_file = output_file,
+      output_file = paste0(output_file_stem, ".pdf"),
+      # output_file = output_file,
       output_format = "pdf_document", 
       output_options = list("toc: TRUE", "number_sections: TRUE"))
     return(TRUE)
   }
+  if (type == "beamer")
+  {
+    
   rmarkdown::render(
     input = render_file, 
-    output_file = output_file)
+      output_file = paste0(output_file_stem, ".pdf"))
+    # output_file = output_file)
+  }
   
 }
 

@@ -44,8 +44,17 @@ build_moodle_questions_for_web = function(
     # assignment_name = "week_02_r_foundations_2"
     assignment_name = "lab_02_r_fundamentals_2"
     assignment_base_dir = "assignments"
+    
+    
+    assignment_name = "week_02"
+    
+    assignment_base_dir = file.path("assignments", "eco_602")
+    assignment_name = "week_01_data_camp_intro_to_r"
+    
+    
     moodle_source_subdir = "moodle"
     file_out = here::here("test.Rmd")
+    
     build_moodle_questions_for_web(assignment_name, out_filename = file_out, assignment_base_dir = assignment_base_dir, moodle_source_subdir = moodle_source_subdir)
   }
   

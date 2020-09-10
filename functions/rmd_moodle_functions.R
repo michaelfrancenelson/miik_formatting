@@ -1,46 +1,29 @@
 require(here)
 
-get_moodle_question_body = function(filename)
-{
-  if (FALSE)
-  {
-    filename = question_files[1]
-  }
-  
-  file_lines = readLines(filename)
-  
-  # Read the lines between the markdown header and the end of the questions section
-  q_line_1 = "Question"
-  q_line_2 = "========"
-  soln_line_1 = "Solution"
-  
-  # Find adjacent lines matching the `exams` package question and solution section delimiters
-  question_lines = grepl(q_line_1, file_lines)
-  soln_lines = grepl(soln_line_1, file_lines)
-  delimiter_lines = grepl(q_line_2, file_lines)
-  
-  # Look for "Question" and "Solution" strings that immediately preced the delimiter string
-  q_line = which(question_lines)[(which(delimiter_lines) - 1) == which(question_lines)]
-  soln_line = which(soln_lines)[(which(delimiter_lines) - 1) == which(question_lines)]
-  
-  if (length(q_line) != 1 | length(soln_line) != 1)
-    cat(sprintf(
-      "Could not locate the Moodle Question and Solution delimiters in file: %s",
-      filename))
-  
-  return(file_lines[(q_line + 2) : (soln_line - 1)])
-}
-
-
-build_moodle_questions_for_web = function(
-  assignment_name, 
+build_web_questions = function(
+  assignment_name,
   out_filename = NULL,
   assignment_base_dir = "assignments",
-  moodle_source_subdir = "moodle")
+  moodle_source_subdir = "moodle",
+  dir_out = here::here("docs"),
+  write_html = TRUE)
 {
   
   if(FALSE)
   {
+    
+    dir_out = "docs"
+    out_filename = NULL
+    write_html = TRUE
+    assignment_base_dir = "assignments"
+    moodle_source_subdir = "moodle"
+    
+    assignment_name = "week_03_data_exploration_deterministic_functions"
+    build_web_questions(
+      assignment_name, 
+      dir_out = here("docs", "individual_assignment_questions"))
+    
+    
     # assignment_name = "week_02_r_foundations_2"
     assignment_name = "lab_02_r_fundamentals_2"
     assignment_base_dir = "assignments"
@@ -52,84 +35,195 @@ build_moodle_questions_for_web = function(
     assignment_name = "week_01_data_camp_intro_to_r"
     
     
+    assignment_base_dir = file.path("assignments", "eco_602")
+    assignment_name = "week_03_data_exploration_deterministic_functions"
+    
+    assignment_base_dir = file.path("assignments", "eco_634")
+    assignment_name = "lab_03"
+    
+    
     moodle_source_subdir = "moodle"
     file_out = here::here("test.Rmd")
     
-    build_moodle_questions_for_web(assignment_name, out_filename = file_out, assignment_base_dir = assignment_base_dir, moodle_source_subdir = moodle_source_subdir)
+    build_web_questions(assignment_name, out_filename = file_out, assignment_base_dir = assignment_base_dir, moodle_source_subdir = moodle_source_subdir)
   }
   
-  question_paths = get_moodle_quiz_question_files(
-    assignment_name, 
-    assignment_base_dir, 
-    moodle_source_subdir)
+  # Attempt to locate the directory holding the assignment files
+  question_paths = 
+    get_question_files(
+      assignment_name, 
+      assignment_base_dir, 
+      moodle_source_subdir)
   
   question_files = question_paths$question_files
   question_markdown_header = "# Question %0.2d"
-  document_lines = get_rmd_header(question_files[1])
   
   # Use the markdown header from the first question for the entire question set:
-  # q1_header = get_rmd_header(question_files[1])
-  # document_lines = q1_header
+  header_lines = get_rmd_header(question_files[1])
+  header_lines = substitute_title(header_lines, paste0("Questions for assignment ", assignment_name))
   
+  out = c(header_lines)
   
-  # q_body_i = get_moodle_question_body(question_files[i])
-  # q_body_i = gsub("r CSS", "r", x = q_body_i)
   
   for (i in 1:length(question_files))
   {
-    document_lines = c(
-      document_lines,      
+    file_lines = readLines(question_files[i])
+    
+    q_title = get_question_title(file_lines = file_lines)
+    
+    out = c(
+      out,      
       c(
         sprintf(fmt = question_markdown_header, i),
-        gsub("r CSS", "r", get_moodle_question_body(question_files[i]))
+        q_title,
+        # Remove duplicated CSS chunk names
+        gsub("r CSS", "r", get_question_body(question_files[i]))
       )
     )
   }
   
-  if (!is.null(out_filename))
+  if (write_html)
   {
-    writeLines(document_lines, out_filename)
+    out_filename = 
+      # here::here(dir_out, 
+      ifelse(
+        is.null(out_filename),
+        paste0(assignment_name, "_questions"),
+        # assignment_name,
+        out_filename)
+    # )
+    cat(sprintf("Writing questions to file %s: ", out_filename))
+    
+    tmp_stem = paste0(sample(letters, 15, replace = TRUE), collapse = "")
+    tmp_file = file.path(dir_out, paste0(tmp_stem, ".Rmd"))
+    writeLines(out, tmp_file)
+    build_doc(file_stem = tmp_stem, dir_out = dir_out, filename_out = out_filename)
+    file.remove(tmp_file)
   }
   
-  invisible(document_lines)
-  
-  # writeLines(c(document_lines), "test.Rmd")
-  # 
-  # if (FALSE)
-  # {
-  #   question_files = get_moodle_quiz_question_files(assignment_name, assignment_base_dir, moodle_source_subdir)  
-  #   # get header of first question file
-  #   question_files[1]
-  #   tmp = readLines(question_files[1])
-  #   tmp[1]
-  #   header_symbols = which(grepl("---", tmp))
-  #   out_header = tmp[header_symbols[1]:header_symbols[2]]  
-  # }
+  invisible(out)
 }
 
-get_moodle_quiz_question_files = function(
+substitute_title = function(header_lines, new_title, title_prefix = "title:")
+{
+  title_line = which(grepl(title_prefix, header_lines))
+  header_lines[title_line] = sprintf("%s %s", title_prefix, new_title)
+  return(header_lines)
+}
+
+get_question_title = function(
+  filename, file_lines = NULL, 
+  title_prefix = "title:",
+  yaml_header_delimiter = "----")
+{
+  if (FALSE)
+  {
+    file_lines = NULL
+    filename = "C:/Users/michaelnelso/git/eco_602_634_2020/assignments/eco_602/week_03_data_exploration_deterministic_functions/moodle/Q1_histograms_elevation.Rmd"
+    file_lines = readLines(filename)
+    title_prefix = "title:"
+  }
+  
+  if (is.null(file_lines)) file_lines = readLines(filename)
+  
+  header_lines = get_rmd_header(NULL, file_lines = file_lines)
+  title_line = header_lines[grepl(title_prefix, header_lines)]
+  title = gsub("\"", "", trimws(gsub(title_prefix, "", title_line)))
+  return(title)
+}
+
+get_question_body = function(
+  filename, 
+  file_lines = NULL, 
+  q_header = "Question", 
+  delimiter = "========", 
+  sol_header = "Solution")
+{
+  if (FALSE)
+  {
+    q_header = "Question"
+    delimiter = "========" 
+    sol_header = "Solution"
+    
+    file_lines = NULL
+    filename = question_files[1]
+  }
+  
+  if (is.null(file_lines)) file_lines = readLines(filename)
+  
+  # Read the lines between the markdown header and the end of the questions section
+  # q_line_1 = "Question"
+  # q_line_2 = "========"
+  # soln_line_1 = "Solution"
+  
+  # Find adjacent lines matching the `exams` package question and solution section delimiters
+  delimiter_lines = which(grepl(delimiter, file_lines))
+  question_lines = which(grepl(q_header, file_lines))
+  soln_lines = which(grepl(sol_header, file_lines))
+  
+  
+  q_line = question_lines[question_lines %in% (delimiter_lines - 1)]
+  s_line = soln_lines[ soln_lines %in% (delimiter_lines - 1)]
+  
+  
+  # Look for "Question" and "Solution" strings that immediately precede the delimiter string
+  # try(
+  #   {
+  #     q_line = which(question_lines)[(which(delimiter_lines) - 1) == which(question_lines)]
+  #     soln_line = which(soln_lines)[(which(delimiter_lines) - 1) == which(question_lines)]
+  #   }
+  # )
+  # 
+  if (length(q_line) != 1 | length(s_line) != 1)
+    cat(sprintf(
+      "Could not locate the Moodle Question and Solution delimiters in file: %s",
+      filename))
+  
+  return(file_lines[(q_line + 2) : (s_line - 1)])
+}
+
+
+
+
+
+get_question_files = function(
   assignment_name,
   assignment_base_dir = "assignments",
   moodle_source_subdir = "moodle"
 )
 {
+  if (FALSE)
+  {
+    assignment_name = "week_03_data_exploration_deterministic_functions"
+    assignment_base_dir = "assignments"
+    moodle_source_subdir = "moodle"
+  }
+  
   potential_dirs = list.files(
     path = here::here(assignment_base_dir),
     pattern = assignment_name, 
     recursive = TRUE, 
     include.dirs = TRUE, 
-    full.names = TRUE)
+    full.names = TRUE,
+  )
   
   # Exclude filename matches - we are only interested in matching a directory name
-  assign_dir = potential_dirs[dir.exists(potential_dirs)]
+  potential_dirs = potential_dirs[dir.exists(potential_dirs)]
+  potential_dirs = potential_dirs[sapply(potential_dirs, function(p) identical(basename(p), assignment_name))]
   
-  if (length(assign_dir) == 0)
+  if (length(potential_dirs) == 0)
     cat(sprintf("No assignment folder called '%1$s' found...", assignment_name))
   
-  if (length(assign_dir) > 1)
-    cat(sprintf("Duplicate assignment folders called '%1$s' found...\n Try using a different assignment base directory to limit duplicates", assignment_name))
+  if (length(potential_dirs) > 1)
+  {
+    cat("Duplicate assignment folders found:\n")
+    for (i in 1:length(potential_dirs)) cat(sprintf("%s: %s\n", i, potential_dirs[i]))
+    cat(sprintf("Try using a different assignment base directory to limit duplicates", assignment_name))
+  }
+  stopifnot(length(potential_dirs) == 1)
   
-  stopifnot(length(assign_dir) == 1)
+  assign_dir = potential_dirs
+  
   
   cat(sprintf("Assignment folder '%1$s' found at location:\n     '%2$s'", assignment_name, assign_dir))
   
@@ -147,7 +241,7 @@ build_moodle_questions = function(
   question_numbers = NA, 
   separate_question_files = FALSE)
 {
-  paths = get_moodle_quiz_question_files(assignment_name, assignment_base_dir, moodle_source_subdir)
+  paths = get_question_files(assignment_name, assignment_base_dir, moodle_source_subdir)
   
   question_basenames = tools::file_path_sans_ext(basename(paths$question_files))
   question_filenames = paths$question_files
@@ -206,4 +300,88 @@ build_assignment = function(file_stem, file_prefix = NULL, assignment_dir = here
     input = assignment_rmd, 
     output_file = file_out,
     output_dir = assignment_dir)
+}
+
+
+build_web_questions_ = function(
+  assignment_name, 
+  out_filename = NULL,
+  assignment_base_dir = "assignments",
+  moodle_source_subdir = "moodle")
+{
+  
+  if(FALSE)
+  {
+    # assignment_name = "week_02_r_foundations_2"
+    assignment_name = "lab_02_r_fundamentals_2"
+    assignment_base_dir = "assignments"
+    
+    
+    assignment_name = "week_02"
+    
+    assignment_base_dir = file.path("assignments", "eco_602")
+    assignment_name = "week_01_data_camp_intro_to_r"
+    
+    
+    assignment_base_dir = file.path("assignments", "eco_602")
+    assignment_name = "week_03_data_exploration_deterministic_functions"
+    
+    assignment_base_dir = file.path("assignments", "eco_634")
+    assignment_name = "lab_03"
+    
+    
+    moodle_source_subdir = "moodle"
+    file_out = here::here("test.Rmd")
+    
+    build_web_questions(assignment_name, out_filename = file_out, assignment_base_dir = assignment_base_dir, moodle_source_subdir = moodle_source_subdir)
+  }
+  
+  question_paths = 
+    get_question_files(
+      assignment_name, 
+      assignment_base_dir, 
+      moodle_source_subdir)
+  
+  question_files = question_paths$question_files
+  question_markdown_header = "# Question %0.2d"
+  document_lines = get_rmd_header(question_files[1])
+  
+  # Use the markdown header from the first question for the entire question set:
+  # q1_header = get_rmd_header(question_files[1])
+  # document_lines = q1_header
+  
+  
+  # q_body_i = get_question_body(question_files[i])
+  # q_body_i = gsub("r CSS", "r", x = q_body_i)
+  
+  for (i in 1:length(question_files))
+  {
+    document_lines = c(
+      document_lines,      
+      c(
+        sprintf(fmt = question_markdown_header, i),
+        gsub("r CSS", "r", get_question_body(question_files[i]))
+      )
+    )
+  }
+  
+  if (!is.null(out_filename))
+  {
+    writeLines(document_lines, out_filename)
+  }
+  
+  invisible(document_lines)
+  
+  # writeLines(c(document_lines), "test.Rmd")
+  # 
+  # if (FALSE)
+  # {
+  #   question_files = get_question_files(assignment_name, assignment_base_dir, moodle_source_subdir)  
+  #   # get header of first question file
+  #   question_files[1]
+  #   tmp = readLines(question_files[1])
+  #   tmp[1]
+  #   header_symbols = which(grepl("---", tmp))
+  #   out_header = tmp[header_symbols[1]:header_symbols[2]]  
+  # }
 }

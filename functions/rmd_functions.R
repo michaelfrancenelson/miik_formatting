@@ -263,21 +263,37 @@ build_popup_figure = function(filename, thumb_width = 250, caption = "[click to 
   invisible(out_popup)
 }
 
-get_rmd_header = function(filename)
+get_rmd_header = function(filename, file_lines = NULL)
 {
-  tmp = readLines(filename)
-  header_symbols = which(grepl("---", tmp))
+  if (is.null(file_lines)) file_lines = readLines(filename)
+  
+  header_symbols = which(grepl("---", file_lines))
   # out_header = tmp[header_symbols[1]:header_symbols[2]]
-  return(tmp[header_symbols[1]:header_symbols[2]])
+  return(file_lines[header_symbols[1]:header_symbols[2]])
 }
 
 
 build_doc = function(
-  file_stem, dir_out, base_path = here::here(),
+  file_stem, 
+  dir_out, 
+  base_path = here::here(),
   filename_out = NULL, 
   type = "html")
 {
-  render_file = list.files(path = base_path, pattern = paste0(file_stem, ".Rmd"), recursive = TRUE, full.names = TRUE)
+  
+  if (FALSE)
+  {
+    file_stem ="week_03_data_exploration_determinstic_functions"
+    dir_out = here::here("docs", "assignments")
+    base_path = here::here("assignments", "eco_602")
+    filename_out = NULL
+      type = "html"
+  }
+  
+  
+  render_file = list.files(
+    path = base_path,
+    pattern = paste0(file_stem, ".Rmd"), recursive = TRUE, full.names = TRUE)
   
   if (length(render_file) == 0)
     cat(sprintf("No source file with name '%1$s.%2$s' found.", file_stem, "Rmd"))

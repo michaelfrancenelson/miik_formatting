@@ -278,7 +278,7 @@ build_doc = function(
   dir_out, 
   base_path = here::here(),
   filename_out = NULL, 
-  type = "html")
+  type = NULL)
 {
   
   if (FALSE)
@@ -327,6 +327,17 @@ build_doc = function(
         )
       )))
   
+  
+  if (is.null(type))
+    {
+      rmarkdown::render(
+        input = render_file, 
+        output_file = paste0(output_file_stem, ".html")
+        # output_file,
+        # output_format = "html_document"
+        ) 
+      return(TRUE)
+    }
   if (type == "html")
   {
     rmarkdown::render(

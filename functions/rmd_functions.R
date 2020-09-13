@@ -24,7 +24,7 @@ find_file = function(filename)
 }
 
 # for compatability with older scripts
-find_img = function(filename) { find_file(filaname) }
+find_img = function(filename) { find_file(filename) }
 
 colorize <- function(x, color) {
   if (knitr::is_latex_output()) {

@@ -110,15 +110,12 @@ substitute_title = function(header_lines, new_title, title_prefix = "title:")
 get_html_title = function(filename, title_node = "title")
 {
   require(rvest)
-  
   file_html = read_html(filename)
-  return(html_text(html_node(movie, title_node)))
-  if (FALSE)
+  return(html_text(html_node(file_html, title_node)))
+
+    if (FALSE)
   {
     library(rvest)
-    
-    
-    
     movie <- read_html("https://en.wikipedia.org/wiki/The_Lego_Movie")
     cast <- html_nodes(movie, "tr:nth-child(8) .plainlist a")
     html_text(html_node(movie, "title"))

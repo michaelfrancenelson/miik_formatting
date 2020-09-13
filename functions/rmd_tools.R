@@ -3,31 +3,7 @@ require(rvest)
 
 source(here::here("rmd_tools", "find_file.R"))
 
-source(here::here("formatting", "functions", "rmd_moodle_functions.R"))
 
-find_file_exists = function(filename, error = FALSE)
-{
-  matching_files = list.files(path = here::here(), pattern = filename, recursive = TRUE, full.names = TRUE)
-  if (length(matching_files) == 0) 
-    if (error) stopifnot(FALSE) else return(NULL)
-  return(matching_files[1])
-}
-
-
-
-
-# find_file = function(filename)
-# {
-#   matching_files = list.files(path = here::here(), pattern = filename, recursive = TRUE, full.names = TRUE)
-#   
-#   if (length(matching_files) == 0) cat(sprintf("File '%s' not found", filename))
-#   stopifnot(length(matching_files) > 0)
-#   
-#   return(matching_files[1])
-# }
-
-# for compatability with older scripts
-find_img = function(filename) { find_file(filename) }
 
 colorize <- function(x, color) {
   if (knitr::is_latex_output()) {
@@ -56,26 +32,32 @@ expandable_html_image = function(
   filename, click_message = "[Click to expand image]", 
   thumb_width = 240, img_width = 60,
   cat_result = TRUE, 
-  moodle_quiz = FALSE, bg_alpha = 0.4)
+  moodle_quiz = FALSE, 
+  bg_alpha = 0.4)
 {
   if (FALSE)
   {
-    # filename = "github_desktop_sign_in.PNG"
-    # filename = "github_desktop_sign_in.PNG"
     filename = "mfn_github_profile_arrow.png"
-    # 
     click_message = "[Click to expand image]"
-    # 
-    # img_width = 70
     img_width = 29
-    # img_width = NULL
     thumb_width = 200
-    # expandable_html_image(filename, click_message, img_width)
     expandable_html_image("mfn_github_profile_arrow.png")
     expandable_html_image("mfn_github_profile_arrow.png", img_width = 29)
   }
-
-  exams::include_supplement(filename, dir = here::here(), recursive = TRUE)  
+  
+  
+  
+  
+  
+  if (!moodle_quiz)
+  {
+    filename_tmp = find_file(filename)
+    # matching_files = list.files(path = here::here(), pattern = filename, recursive = TRUE, full.names = TRUE)
+    # stopifnot(length(matching_files) > 0)
+    # filename = matching_files[1]
+  }
+  
+  
   
   href_image = paste0("img", sample(9999999, 1))
   href_close = paste0(sample(letters, 12), collapse = "")
@@ -233,16 +215,14 @@ build_popup_figure = function(filename, thumb_width = 250, caption = "[click to 
     }
   )
   
-  # # option to search project path for the file.  This doesn't work well with moodle quiz questions.
-  # if (recursive)
-  # {
-  #   candidate_files = list.files(path = here::here(), pattern = filename, recursive = TRUE, full.names = TRUE)
-  #   stopifnot(length(candidate_files) > 0)
-  #   filename = candidate_files[1]
-  # }
-  # 
-  exams::include_supplement(filename, dir = here::here(), recursive = TRUE)
-  
+  # option to search project path for the file.  This doesn't work well with moodle quiz questions.
+  if (recursive)
+  {
+    filename = find_file(filename, duplicated_files_error = FALSE, return_all = FALSE)
+    # candidate_files = list.files(path = here::here(), pattern = filename, recursive = TRUE, full.names = TRUE)
+    # stopifnot(length(candidate_files) > 0)
+    # filename = candidate_files[1]
+  }
   
   fmt_popup = 
     '<a target="_blank" href="%1$s"><figure ><img src="%1$s" style="width:%2$s"><figcaption>%3$s</figcaption></figure></a>'
@@ -257,6 +237,26 @@ get_rmd_header = function(filename, file_lines = NULL)
   header_symbols = which(grepl("---", file_lines))
   return(file_lines[header_symbols[1]:header_symbols[2]])
 }
+
+
+build_html = function(
+  rmd_filename, 
+  dir_out, 
+  base_path = here::here(),
+  filename_out = NULL,
+  type = NULL)
+{
+  source_file = find_file(rmd_filename, return_all = TRUE, error = TRUE)
+  if (length(render_file) == 0)
+    cat(sprintf("No source file with name '%1$s.%2$s' found.", file_stem, "Rmd"))
+  if (length(render_file) > 1)
+    cat(sprintf("Duplicate source files with name '%1$s.%2$s' were found.", file_stem, "Rmd"))
+  
+  
+  
+}
+
+
 
 build_doc = function(
   file_stem, 
@@ -274,9 +274,12 @@ build_doc = function(
     filename_out = NULL
     type = "html"
   }
+  
   render_file = list.files(
     path = base_path,
-    pattern = paste0(file_stem, ".Rmd"), recursive = TRUE, full.names = TRUE)
+    pattern = paste0(file_stem, ".Rmd"),
+    recursive = TRUE,
+    full.names = TRUE)
   
   if (length(render_file) == 0)
     cat(sprintf("No source file with name '%1$s.%2$s' found.", file_stem, "Rmd"))

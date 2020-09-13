@@ -11,7 +11,6 @@ build_web_questions = function(
   
   if(FALSE)
   {
-    
     dir_out = "docs"
     out_filename = NULL
     write_html = TRUE
@@ -69,7 +68,7 @@ build_web_questions = function(
   {
     file_lines = readLines(question_files[i])
     
-    q_title = get_question_title(file_lines = file_lines)
+    q_title = get_rmd_title(file_lines = file_lines)
     
     out = c(
       out,      
@@ -85,13 +84,10 @@ build_web_questions = function(
   if (write_html)
   {
     out_filename = 
-      # here::here(dir_out, 
       ifelse(
         is.null(out_filename),
         paste0(assignment_name, "_questions"),
-        # assignment_name,
         out_filename)
-    # )
     cat(sprintf("Writing questions to file %s: ", out_filename))
     
     tmp_stem = paste0(sample(letters, 15, replace = TRUE), collapse = "")
@@ -100,7 +96,6 @@ build_web_questions = function(
     build_doc(file_stem = tmp_stem, dir_out = dir_out, filename_out = out_filename)
     file.remove(tmp_file)
   }
-  
   invisible(out)
 }
 
@@ -111,7 +106,31 @@ substitute_title = function(header_lines, new_title, title_prefix = "title:")
   return(header_lines)
 }
 
-get_question_title = function(
+
+get_html_title = function(filename, title_node = "title")
+{
+  require(rvest)
+  
+  file_html = read_html(filename)
+  return(html_text(html_node(movie, title_node)))
+  if (FALSE)
+  {
+    library(rvest)
+    
+    
+    
+    movie <- read_html("https://en.wikipedia.org/wiki/The_Lego_Movie")
+    cast <- html_nodes(movie, "tr:nth-child(8) .plainlist a")
+    html_text(html_node(movie, "title"))
+    html_text(cast)
+    html_name(cast)
+    html_attrs(cast)
+    html_attr(cast, "href")
+    
+  }
+}
+
+get_rmd_title = function(
   filename, file_lines = NULL, 
   title_prefix = "title:",
   yaml_header_delimiter = "----")
@@ -151,40 +170,20 @@ get_question_body = function(
   
   if (is.null(file_lines)) file_lines = readLines(filename)
   
-  # Read the lines between the markdown header and the end of the questions section
-  # q_line_1 = "Question"
-  # q_line_2 = "========"
-  # soln_line_1 = "Solution"
-  
   # Find adjacent lines matching the `exams` package question and solution section delimiters
   delimiter_lines = which(grepl(delimiter, file_lines))
   question_lines = which(grepl(q_header, file_lines))
   soln_lines = which(grepl(sol_header, file_lines))
   
-  
   q_line = question_lines[question_lines %in% (delimiter_lines - 1)]
   s_line = soln_lines[ soln_lines %in% (delimiter_lines - 1)]
   
-  
-  # Look for "Question" and "Solution" strings that immediately precede the delimiter string
-  # try(
-  #   {
-  #     q_line = which(question_lines)[(which(delimiter_lines) - 1) == which(question_lines)]
-  #     soln_line = which(soln_lines)[(which(delimiter_lines) - 1) == which(question_lines)]
-  #   }
-  # )
-  # 
   if (length(q_line) != 1 | length(s_line) != 1)
     cat(sprintf(
       "Could not locate the Moodle Question and Solution delimiters in file: %s",
       filename))
-  
   return(file_lines[(q_line + 2) : (s_line - 1)])
 }
-
-
-
-
 
 get_question_files = function(
   assignment_name,
@@ -316,12 +315,10 @@ build_web_questions_ = function(
     assignment_name = "lab_02_r_fundamentals_2"
     assignment_base_dir = "assignments"
     
-    
     assignment_name = "week_02"
     
     assignment_base_dir = file.path("assignments", "eco_602")
     assignment_name = "week_01_data_camp_intro_to_r"
-    
     
     assignment_base_dir = file.path("assignments", "eco_602")
     assignment_name = "week_03_data_exploration_deterministic_functions"
@@ -346,14 +343,6 @@ build_web_questions_ = function(
   question_markdown_header = "# Question %0.2d"
   document_lines = get_rmd_header(question_files[1])
   
-  # Use the markdown header from the first question for the entire question set:
-  # q1_header = get_rmd_header(question_files[1])
-  # document_lines = q1_header
-  
-  
-  # q_body_i = get_question_body(question_files[i])
-  # q_body_i = gsub("r CSS", "r", x = q_body_i)
-  
   for (i in 1:length(question_files))
   {
     document_lines = c(
@@ -365,23 +354,7 @@ build_web_questions_ = function(
     )
   }
   
-  if (!is.null(out_filename))
-  {
-    writeLines(document_lines, out_filename)
-  }
+  if (!is.null(out_filename)) writeLines(document_lines, out_filename)
   
   invisible(document_lines)
-  
-  # writeLines(c(document_lines), "test.Rmd")
-  # 
-  # if (FALSE)
-  # {
-  #   question_files = get_question_files(assignment_name, assignment_base_dir, moodle_source_subdir)  
-  #   # get header of first question file
-  #   question_files[1]
-  #   tmp = readLines(question_files[1])
-  #   tmp[1]
-  #   header_symbols = which(grepl("---", tmp))
-  #   out_header = tmp[header_symbols[1]:header_symbols[2]]  
-  # }
 }

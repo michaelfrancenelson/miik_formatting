@@ -1,5 +1,7 @@
 \usepackage{tikz}
 \usepackage{caption}
+\usepackage{xcolor}
+\usepackage{mdframed}
 \usetikzlibrary{patterns,arrows,decorations.pathreplacing}
 \usepackage{tikzpagenodes}
 \definecolor{grn}{rgb}{0.0, 0.2, 0.0}
@@ -77,8 +79,7 @@
     \begin{tikzpicture}[#1]%
         \def\myboxname{#3}%
         \node [draw,inner sep=2.5ex,text width=#2]% good options: minimum height, minimum width
-            (BOXCONTENT) \bgroup\rule{0pt}{3ex}\ignorespaces
-}{%
+            (BOXCONTENT) \bgroup\rule{0pt}{3ex}\ignorespaces}{%
         \egroup;
         \node [right,inner xsep=1em,fill=bancolor!75,outer sep=0pt,text height=2ex,text depth=.5ex] (BOXNAME)
             at ([shift={(-1em,0pt)}]BOXCONTENT.north west) {\myboxname};
@@ -88,8 +89,8 @@
 
 \usepackage{tcolorbox}
 
-\definecolor{shaded}{rgb}{0.85, 0.85, 0.85}
 \newtcolorbox{blackborder}{
+\definecolor{shaded}{rgb}{0.85, 0.85, 0.85}
     colback=shaded,
     colframe=black,
     coltext=black,
@@ -98,6 +99,7 @@
 
 
 \newenvironment{shadebox}{
+\definecolor{shaded}{rgb}{0.85, 0.85, 0.85}
   \definecolor{shadecolor}{rgb}{0, 0, 0}  % black
   \color{white}
   \begin{shaded}}

@@ -32,6 +32,8 @@
 .hintborder  { border-radius: 0.2cm; padding: 0.3cm; border: 0.1cm solid #ECE8E7; color: rgba(0,0,0,1); }
 .outputborder  { border-radius: 0.01cm; padding: 0.3cm; border: 0.1cm solid #E6F0FF; color: rgba(0,0,0,1); }
 
+.emphasis {color: rgba(1, 0, 0, 1); font-weight: bold;}
+.deemphasize {color: rgba(0, 0, 0, .3); font-weight: bold;}
 
 
 
